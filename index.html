@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+body { font-family: sans-serif; }
+h1 { padding: 0; margin: 0; text-align: center; }
+h2 { padding: 0; margin: 0; }
+div#container { overflow: auto; border: solid black 6px; }
+div.bundle { margin: 0.5em; padding: 0.5em; background: lightblue; float: left; }
+p.tag { margin: 0.5em; font-weight: bold; }
+</style>
+</head>
+<body>
+<h1>Tag Bundles</h1>
+<div id="container"></div>
+<script src="http://d3js.org/d3.v5.min.js"></script>
+<script type="text/javascript"charset="utf-8">
+
+    d3.csv("tags.txt", function(d) { return [d.tag, d.bundle]; })
+    .then(function(data) {
+
+        d3.select("div#container")
+        .selectAll("div") // insert divs inside the container div
+        .data(data) // d[0] is the tag name, d[1] is the bundle name
+        .enter() // for each new tag,bundle line in the data
+        .insert("div") // create a div
+
+        .filter(function(d,i) { return !d[0]; }) // select bundle divs with no tag
+        .attr("id", function(d,i) { return d[1]; }) // id by bundle name
+        .classed("bundle", true) // class as a bundle for styling
+        .insert("h2") // add a heading inside the bundle div
+        .text(function(d) { return d[1]; }); // named with the bundle name
+
+        d3.select("div#container") // then re-select all the divs
+        .selectAll("div") // there will be additional divs for each tag as well
+        .data(data) // and these divs are at the top level which is wrong
+        .filter(function(d,i) { return d[0]; }) // all tag entries have a tag name
+        .remove(); // remove the superfluous div that is at the wrong level
+
+        data.forEach(function(d) { // run another pass over the data
+            if (d[0]) { // if the entry is a tag with a tag name
+                d3.select("#" + d[1]) // select the bundle div which will be the parent
+                .append("p") // add a paragraph to display the tag name inside the parent div
+                .classed("tag", true) // class as a tag for styling
+                .text(d[0]); // name the tag with the tag name
+            }
+        });
+
+    });
+
+    // TABLE APPROACH
+    // d3.text("tags.txt", function(data) {
+    //     var rows = d3.csv.parseRows(data);
+    //     var container = d3.select("body")
+    //         .append("div").classed("container", true)
+    //         .selectAll("tr").data(rows).enter().append("tr")
+    //         .selectAll("td").data(function(d) { return d; }).enter().append("td").text(function(d) { return d; });
+    // });
+</script>
+</body>
+</html>
