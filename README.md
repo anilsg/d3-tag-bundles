@@ -2,7 +2,7 @@
 
 Use D3 to create hierarchical text content to display tag bundle structure.
 
-D3 is a JavaScript library targeted at simplifying the creation of SVG visualisations of live data.
+[D3](https://github.com/d3/d3/wiki) is a JavaScript library targeted at simplifying the creation of SVG visualisations of live data.
 
 This HTML page uses D3 to construct a DOM to present hierarchical text content instead.
 
